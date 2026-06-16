@@ -878,6 +878,21 @@ function adminControls(c){
     </label>
   </div>`;
 }
+  async function updateStatus(id, status) {
+  const { error } = await supabase
+    .from('complaints')
+    .update({ status })
+    .eq('id', id);
+
+  if (error) {
+    console.error("Update failed:", error.message);
+    alert("Status update failed");
+  } else {
+    console.log("Updated successfully");
+    loadAdminDashboard();
+    updateHomeStats();
+  }
+}
 
 // ─── ADMIN (FIX: loadAdminDashboard now async) ───
 function adminLogin(){
