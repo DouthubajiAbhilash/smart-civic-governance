@@ -681,9 +681,23 @@ async function getComplaints(){
 
 // FIX: updateStatus now uses Supabase instead of missing saveComplaints()
 async function updateStatus(id,status){
-  const {error}=await db.from('complaints').update({status}).eq('id',id);
-  if(error){alert('Error updating status: '+error.message);return;}
-  loadAdminDashboard();
+  console.log("updateStatus called:", id, status);
+
+  const { data, error } = await db
+    .from('complaints')
+    .update({ status })
+    .eq('id', id)
+    .select();
+
+  if(error){
+    console.error("Supabase error:", error);
+    alert('Error updating status: '+error.message);
+    return;
+  }
+
+  console.log("Updated row:", data);
+
+  await loadAdminDashboard();
 }
 
 // FIX: uploadAdminPhoto now uses Supabase instead of missing saveComplaints()
