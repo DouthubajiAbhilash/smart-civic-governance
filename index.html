@@ -750,7 +750,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       issue_photo: issuePhotoB64,
       before_photo: '',
       after_photo: '',
-      date: new Date().toLocaleString()
+     date: new Date().toISOString()
     };
 
     const {data,error}=await db.from('complaints').insert([item]).select();
@@ -864,36 +864,20 @@ function adminControls(c){
   return `<div class="admin-actions">
     <div>
       <label style="font-size:12px;font-weight:600;color:var(--gray600);display:block;margin-bottom:5px">Update Status</label>
-      <select class="status-select" onchange="updateStatus(${c.id},this.value)">
+      <select class="status-select" onchange="updateStatus('${c.id}',this.value)">
         <option ${c.status==='Pending'?'selected':''}>Pending</option>
         <option ${c.status==='In Progress'?'selected':''}>In Progress</option>
         <option ${c.status==='Resolved'?'selected':''}>Resolved</option>
       </select>
     </div>
     <label style="font-size:12px;font-weight:600;color:var(--gray600)">Before Photo
-      <input type="file" accept="image/*" onchange="uploadAdminPhoto(${c.id},'before_photo',this)" style="margin-top:5px">
+      <input type="file" accept="image/*" onchange="uploadAdminPhoto('${c.id}','before_photo',this)" style="margin-top:5px">
     </label>
     <label style="font-size:12px;font-weight:600;color:var(--gray600)">After Photo
-      <input type="file" accept="image/*" onchange="uploadAdminPhoto(${c.id},'after_photo',this)" style="margin-top:5px">
+      <input type="file" accept="image/*" onchange="uploadAdminPhoto('${c.id}','after_photo',this)" style="margin-top:5px">
     </label>
   </div>`;
 }
-  async function updateStatus(id, status) {
-  const { error } = await supabase
-    .from('complaints')
-    .update({ status })
-    .eq('id', id);
-
-  if (error) {
-    console.error("Update failed:", error.message);
-    alert("Status update failed");
-  } else {
-    console.log("Updated successfully");
-    loadAdminDashboard();
-    updateHomeStats();
-  }
-}
-
 // ─── ADMIN (FIX: loadAdminDashboard now async) ───
 function adminLogin(){
   if(document.getElementById('adminPassword').value==='admin123'){
